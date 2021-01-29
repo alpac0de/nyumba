@@ -1,34 +1,39 @@
 <?php
 
-namespace App\Housing\Subscriber;
+namespace App\Advert\Subscriber;
 
-use App\Housing\Event\HousingCreatedEvent;
+use App\Advert\Event\AdvertCreatedEvent;
+use App\Entity\Advert;
 use MeiliSearch\Client;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
-class HousingSubscriber implements EventSubscriberInterface
+class AdvertiseSubscriber implements EventSubscriberInterface
 {
     private Client $meiliSearchClient;
     private SerializerInterface $serializer;
+
+    private $index;
 
     public function __construct(Client $meiliSearchClient, SerializerInterface $serializer)
     {
         $this->meiliSearchClient = $meiliSearchClient;
         $this->serializer = $serializer;
+        $this->index = $this->meiliSearchClient->getIndex('advert');
     }
 
     public static function getSubscribedEvents(): array
     {
         return [
-            HousingCreatedEvent::class => 'onCreateHousing',
+            AdvertCreatedEvent::class => 'onCreateAdvertise',
         ];
     }
 
-    public function onCreateHousing(HousingCreatedEvent $event)
+    public function onCreateAdvertise(AdvertCreatedEvent $event): void
     {
-        $data = $this->serializer->norma($event->getModel(), 'json');
+        $data = $this->serializer->serialize($event->getModel(), 'json');
         $data = json_decode($data);
-        $this->meiliSearchClient->getIndex('housings')->addDocuments([$data]);
+
+        $this->index->addDocuments([$data]);
     }
 }

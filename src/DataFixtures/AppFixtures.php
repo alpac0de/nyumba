@@ -2,8 +2,8 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Housing;
-use App\Housing\Event\HousingCreatedEvent;
+use App\Entity\Advert;
+use App\Advert\Event\AdvertCreatedEvent;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
@@ -24,21 +24,25 @@ class AppFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         $faker = Factory::create('fr_FR');
-        $this->meiliSearchClient->deleteIndex('housings');
-        $this->meiliSearchClient->createIndex('housings');
+        try {
+            $this->meiliSearchClient->deleteIndex('advert');
+        } catch (\Exception $exception) { }
+
+        $this->meiliSearchClient->createIndex('advert');
 
         foreach (range(1, 1000) as $item) {
-            $housing = new Housing();
-            $housing->setName($faker->name());
-            $housing->setDescription($faker->text());
+            $advert = new Advert();
+            $advert->setCurrentLocale('fr');
+            $advert->setName($faker->name());
+            $advert->setDescription($faker->text());
 
-            $types = Housing::TYPES;
-            $housing->setAddress($faker->address);
-            $housing->setCountry($faker->country);
-            $housing->setType($types[array_rand(Housing::TYPES, 1)]);
-            $manager->persist($housing);
+            $types = Advert::TYPES;
+            $advert->setAddress($faker->address);
+            $advert->setCountry($faker->country);
+            $advert->setType($types[array_rand(Advert::TYPES, 1)]);
+            $manager->persist($advert);
 
-            $this->eventDispatcher->dispatch(new HousingCreatedEvent($housing));
+            $this->eventDispatcher->dispatch(new AdvertCreatedEvent($advert));
         }
 
         $manager->flush();

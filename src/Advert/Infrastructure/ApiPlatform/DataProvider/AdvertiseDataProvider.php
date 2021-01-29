@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Housing\Infrastructure\ApiPlatform\DataProvider;
+namespace App\Advert\Infrastructure\ApiPlatform\DataProvider;
 
 use ApiPlatform\Core\DataProvider\ContextAwareCollectionDataProviderInterface;
 use App\Housing\Model\Housing;
 use MeiliSearch\Client;
 use Symfony\Component\Serializer\SerializerInterface;
 
-class HousingDataProvider implements ContextAwareCollectionDataProviderInterface
+class AdvertiseDataProvider implements ContextAwareCollectionDataProviderInterface
 {
     private Client $meiliSearchClient;
     private SerializerInterface $serializer;
@@ -25,7 +25,7 @@ class HousingDataProvider implements ContextAwareCollectionDataProviderInterface
 
     public function getCollection(string $resourceClass, string $operationName = null, array $context = []): iterable
     {
-        foreach ($this->meiliSearchClient->getIndex('housings')->getDocuments() as $data) {
+        foreach ($this->meiliSearchClient->getIndex('advert')->getDocuments() as $data) {
             $data = json_encode($data);
 
             yield $this->serializer->deserialize($data, Housing::class, 'json');

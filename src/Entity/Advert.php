@@ -2,15 +2,18 @@
 
 namespace App\Entity;
 
-use App\Repository\HousingRepository;
+use App\Repository\AdvertRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\UuidV4;
 
 /**
- * @ORM\Entity(repositoryClass=HousingRepository::class)
+ * @ORM\Entity(repositoryClass=AdvertRepository::class)
  */
-class Housing
+class Advert
 {
+    use TranslatableTrait {
+        __construct as private initializeTranslationsCollection;
+    }
     public const TYPES = [
         'apartment',
         'house',
@@ -18,7 +21,7 @@ class Housing
 
     /**
      * @ORM\Id
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=false)
      */
     private string $id;
 
@@ -31,11 +34,6 @@ class Housing
      * @ORM\Column(type="datetimetz", length=255, nullable=true)
      */
     private ?\DateTimeInterface $updatedAt;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=false)
-     */
-    private string $name;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=false)
@@ -61,6 +59,7 @@ class Housing
     {
         $this->id = (string) new UuidV4();
         $this->createdAt = new \DateTimeImmutable();
+        $this->initializeTranslationsCollection();
     }
 
     public function getId(): string
@@ -90,12 +89,12 @@ class Housing
 
     public function getName(): ?string
     {
-        return $this->name;
+        return $this->getTranslation()->getName();
     }
 
     public function setName(string $name): void
     {
-        $this->name = $name;
+        $this->getTranslation()->setName($name);
     }
 
     public function getAddress(): string
@@ -120,12 +119,12 @@ class Housing
 
     public function getDescription(): ?string
     {
-        return $this->description;
+        return $this->getTranslation()->getDescription();
     }
 
     public function setDescription(?string $description): void
     {
-        $this->description = $description;
+        $this->getTranslation()->setDescription($description);
     }
 
     public function getType(): string
@@ -136,5 +135,10 @@ class Housing
     public function setType(string $type): void
     {
         $this->type = $type;
+    }
+
+    public function createTranslation(): AdvertTranslation
+    {
+        return new AdvertTranslation();
     }
 }
