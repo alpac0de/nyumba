@@ -2,13 +2,11 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\HousingRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\UuidV4;
 
 /**
- * @ApiResource()
  * @ORM\Entity(repositoryClass=HousingRepository::class)
  */
 class Housing

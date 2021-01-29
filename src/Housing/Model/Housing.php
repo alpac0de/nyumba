@@ -4,9 +4,10 @@ namespace App\Housing\Model;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 
-/**
- * @ApiResource
- */
+#[ApiResource(
+    collectionOperations: ['get'],
+    itemOperations: ['get'],
+)]
 class Housing
 {
     public string $id;
