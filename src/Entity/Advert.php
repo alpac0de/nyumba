@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\AdvertRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\UuidV4;
 
@@ -55,10 +57,16 @@ class Advert
      */
     private ?string $description;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Media::class, mappedBy="advert", cascade={"all"})
+     */
+    private Collection $media;
+
     public function __construct()
     {
         $this->id = (string) new UuidV4();
         $this->createdAt = new \DateTimeImmutable();
+        $this->media = new ArrayCollection();
         $this->initializeTranslationsCollection();
     }
 
@@ -135,6 +143,16 @@ class Advert
     public function setType(string $type): void
     {
         $this->type = $type;
+    }
+
+    public function getMedia(): Collection
+    {
+        return $this->media;
+    }
+
+    public function addMedia(Media $media)
+    {
+        $this->media->add($media);
     }
 
     public function createTranslation(): AdvertTranslation

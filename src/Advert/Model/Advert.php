@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Housing\Model;
+namespace App\Advert\Model;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 
@@ -8,7 +8,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
     collectionOperations: ['get'],
     itemOperations: ['get'],
 )]
-class Housing
+class Advert
 {
     public string $id;
     public \DateTimeInterface $createdAt;
@@ -16,4 +16,5 @@ class Housing
     public string $type;
     public string $address;
     public string $price = '500€';
+    public string $cover;
 }
